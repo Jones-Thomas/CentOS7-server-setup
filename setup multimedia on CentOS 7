@@ -1,0 +1,31 @@
+#You will need to also install the EPEL repository as nux-dextop depends on this for some of its packages.
+
+#Step 1: Install the nux-dextop repository
+#Run this command to install the nux-dextop repository.
+
+$ yum -y install http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm
+
+#Step 2: Install the adobe repository
+#Run this command to install the adobe repository.
+
+$ yum -y install http://linuxdownload.adobe.com/adobe-release/adobe-release-x86_64-1.0-1.noarch.rpm
+
+#Step 3: Install the desired packages
+#This command will download the flash plugin for Firefox.
+
+$ yum -y install flash-plugin
+
+#This command will download the java plugin for Firefox.
+
+$ yum -y install icedtea-web
+
+This command will install Handbrake, VLC and smplayer.
+
+$ yum -y install vlc smplayer ffmpeg HandBrake-{gui,cli}
+
+#The following command installs a decoder and codecs which are required to play certain types of media. Their usage may be legally restricted in some areas. Obtain legal advice if you are uncertain about the laws in your locality.
+
+$ yum -y install libdvdcss gstreamer{,1}-plugins-ugly gstreamer-plugins-bad-nonfree gstreamer1-plugins-bad-freeworld
+
+#Final note:
+#Notice that you have the CentOS, Nux-Dextop and Adobe repos enabled by default and there should be no issues with running "yum update" or "yum upgrade" in the future
