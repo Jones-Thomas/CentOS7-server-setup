@@ -3,6 +3,12 @@
 #This will not install any new packages other than updating and installing the latest version of installed packages and security updates. Moreover Update and Upgrade are pretty same except the fact that Upgrade = Update + enable obsoletes processing during updates.
 
 yum -y update && yum -y upgrade
+# Enable Third Party Repositories
+#It is not a good idea to add untrusted repositories specially in production and it may be fatal. However just for example here we will be adding a few community approved trusted repositories to install third party tools and packages.
+# Add Extra Package for Enterprise Linux (EPEL) Repository.
+
+yum -y install epel-release
+rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-2.el7.elrepo.noarch.rpm
 
 # Configure Network with Static IP Address  [Provides ifconfig utility] The first thing you need to do is to configure Static IP address, Route and DNS to your CentOS Server. We will be using ip command the replacement of ifconfig command. However, ifconfig command is still available for most of the Linux distributions and can be installed from default repository.
 # Install network and system utilities.
@@ -44,13 +50,6 @@ yum -y install iftop
 yum -y install htop
 yum -y install atop
 yum -y install lsof
-
-# Enable Third Party Repositories
-#It is not a good idea to add untrusted repositories specially in production and it may be fatal. However just for example here we will be adding a few community approved trusted repositories to install third party tools and packages.
-# Add Extra Package for Enterprise Linux (EPEL) Repository.
-
-yum -y install epel-release
-rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-2.el7.elrepo.noarch.rpm
 
 # Install 7-zip Utility
 # In the CentOS Minimal Install you don’t get utility like unzip or unrar. We have the option to install each utility as required or an utility that servers for all. 7-zip is such an utility which compress and extract files of all known types.
