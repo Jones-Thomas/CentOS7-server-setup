@@ -5,8 +5,10 @@
 yum -y update && yum -y upgrade
 
 # Configure Network with Static IP Address  [Provides ifconfig utility] The first thing you need to do is to configure Static IP address, Route and DNS to your CentOS Server. We will be using ip command the replacement of ifconfig command. However, ifconfig command is still available for most of the Linux distributions and can be installed from default repository.
+# Install network and system utilities.
+yum -y install net-tools 
+yum -y install bind-utils
 
-yum -y install net-tools            
 echo -e "ip addr show"
 
 # Set HostName of Server
@@ -36,6 +38,12 @@ yum -y install wget
 # Telnet is a network protocol that enables a user to login into another computer on the same network over TCP/IP. Once connection etablished to the remote computer it becomes a virtual terminal and allow you to communicate with the remote host within your computer as per whatever privileges provided to you, Telnet also very useful for checking listening ports on remote computer or host.
 
 yum -y install telnet
+
+# Install utilities iftop, atop, htop, lsof
+yum -y install iftop
+yum -y install htop
+yum -y install atop
+yum -y install lsof
 
 # Enable Third Party Repositories
 #It is not a good idea to add untrusted repositories specially in production and it may be fatal. However just for example here we will be adding a few community approved trusted repositories to install third party tools and packages.
@@ -72,4 +80,6 @@ yum -y install rkhunter
 # Next, download and install Virtualbox extension pack.
 # wget http://download.virtualbox.org/virtualbox/4.3.12/Oracle_VM_VirtualBox_Extension_Pack-4.3.12-93733.vbox-extpack
 # VBoxManage extpack install Oracle_VM_VirtualBox_Extension_Pack-4.3.12-93733.vbox-extpack
-
+# Reboot your System
+echo "The system is going to perform a Reboot"
+shutdown -r now
