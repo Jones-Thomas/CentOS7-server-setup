@@ -1,0 +1,208 @@
+Yum and RPM Tricks
+Contents
+
+Getting rpm to display architecture
+Query packages not from CentOS
+Reset File Permissions
+View the Changelog
+Using RPM
+Using YUM Changelog Plugin
+Where's the Documentation?
+Package Origin
+Extract just one File
+Query Package Install Order and Dates
+Query Available Packages from a Repo
+Search yum repositories for a string
+Enable or Disable a Repo from the Command Line
+Using yum with a proxy server
+Use yum to install a local package, automatically checking/satisfying dependencies
+Get set up for rebuilding packages as yourself, not root
+Method A
+Method B
+Display priority scores for all repositories
+Show all installed GPG keys
+Package signing
+Yum Groups
+Yum and rpm are excellent package management tools, but they have several lesser known options and features that allow you to do some very interesting things. You probably won't need to use these with any frequency, but they come in handy when you need them.
+
+1. Getting rpm to display architecture
+This one is a pretty simple tip, and very useful especially for people using x86_64 systems. Just one line in ~/.rpmmacros will save all sorts of trouble later.
+
+
+echo "%_query_all_fmt %%{name}-%%{version}-%%{release}.%%{arch}" >> ~/.rpmmacros
+2. Query packages not from CentOS
+Want to query all those packages installed from 3rd party repositories, not CentOS?
+
+
+rpm -qa --qf '%{NAME} %{VENDOR}\n' | grep -v CentOS
+3. Reset File Permissions
+Have you managed to completely mess up file permissions for a given package? Not a problem, because RPM has you covered.
+
+
+rpm --setperms <packagename>
+4. View the Changelog
+Because CentOS and the upstream vendor have backported security patches, the version numbers can often be misleading when you look for CVE fixes. Checking the changelog of a package is a good way to see if the fix has been implemented.
+
+4.1. Using RPM
+
+rpm -q --changelog <packagename> | less
+Using less isn't necessary, but for some packages like the kernel, the changelog can be quite long. Using less helps to make things more readable.
+
+It is also possible to display RPM changelogs for RPMs not presently installed. Such as manually downloaded RPMs or ones referenced via a URL.
+
+rpm -q --changelog -p /home/my_user/somepackage.rpm | less
+rpm -q --changelog -p http://mirror.centos.org/centos/6/os/x86_64/Packages/qemu-kvm-0.12.1.2-2.445.el6.x86_64.rpm | less
+4.2. Using YUM Changelog Plugin
+RPM is powerful, but YUM has its advantages too. Specifically when the Changelog plugin is coupled with YUM, it is no longer necessary to locally download or reference an RPM via URL to view the changelog prior to installing the package or update.
+
+Depending on installed version of CentOS, the YUM Changelog plugin package name can differ (as seen below).
+
+CentOS 5 has the package yum-changelog
+
+CentOS 6 has the package yum-plugin-changelog
+
+CentOS 7 has the package yum-plugin-changelog
+
+Run the below yum command if you'd like to review the details for the package. This YUM plugin is in the CentOS Base repo, but not installed by default (per a CentOS 6 install).
+
+yum info yum-plugin-changelog
+Install the YUM Changelog plugin as you would any regular package.
+
+yum install yum-plugin-changelog
+Example usage that prints the last (most recent) changelog message for the tzdata package. Changelog notes for updates that have not been installed yet are found in the "Available Packages" section instead of the "Installed Packages" section.
+
+yum changelog 1 tzdata | less
+5. Where's the Documentation?
+To quickly list documentation relating to a package, you can use the following two options:
+
+
+rpm -qd <packagename>
+This will show you the documentation contained in that rpm, or if you only have a filename you can do:
+
+rpm -qdf /path/to/file
+and rpm will show you the documentation in the package that owns the file.
+6. Package Origin
+Occasionally it's nice to know where you got certain packages, or how many packages you have on your system from a particular repository or vendor. There are a couple of search options that you can use which are not in the rpm man pages to help you out here. While they're not 100% perfect, they certainly help out. Most package repositories tag their packages with an identifier in the Release string. For example rpmforge uses rf as their identifier. You can use this to see what you have of theirs installed with
+
+
+rpm -qa release="*rf*"
+or if you want to see just how many packages you have installed built by JohnnyHughes you could use
+
+
+rpm -qa packager="Johnny*"
+This trick works for most categories visible in rpm -qi <packagename>.
+
+Another approach is to use the keychecker package available in the EPEL repository, which lists rpm packages based on the GPG key they were signed with.
+
+7. Extract just one File
+If you need to extract just one file from an rpm without reinstalling the whole package, you can do this with rpm2cpio. For example, to extract just the config file from the logrotate rpm you would use the following statement:
+
+
+rpm2cpio logrotate-1.0-1.i386.rpm |cpio -ivd etc/logrotate.conf
+8. Query Package Install Order and Dates
+Useful after an upgrade to find old packages that were not upgraded.
+
+
+rpm -qa --last >~/RPMS_by_Install_Date
+Review the end of the output file in "less" to find all RPMS older than the install date. Can also grep for specific packages and see when they were installed.
+
+9. Query Available Packages from a Repo
+Find all packages available from a specific repository, e.g. RPMforge. This does not show the already installed packages from this repository.
+
+
+yum --disablerepo "*" --enablerepo "rpmforge" list available 
+10. Search yum repositories for a string
+Find packages containing a string in package name or description.
+
+
+yum search buildrpmtree | less 
+11. Enable or Disable a Repo from the Command Line
+For CentOS-6 only - not available in CentOS-5.
+
+yum-config-manager --enable c6-media
+
+yum-config-manager --disable c6-media
+12. Using yum with a proxy server
+To enable yum operations to use a proxy server you should first add the following parameter to /etc/yum.conf
+
+
+proxy=http://yourproxy:8080/  
+where yourproxy is the name of the proxy server you want to access and 8080 is the proxy port. If the server requires authentication you can specify the login credentials like:
+
+
+proxy=http://username:password@yourproxy:8080/ 
+The rpm package manager makes use of the proxy environment variable. This can be set system wide in /etc/profile or user specific in ~/.bash_profile::
+
+
+export http_proxy=http://yourproxy:8080/ export ftp_proxy=http://yourproxy:8080/ 
+To use wget throug a proxy server add the following lines to /etc/wgetrc
+
+
+http_proxy = http://yourproxy:8080/  ftp_proxy = http://yourproxy:8080/  
+In both cases, login information can be set like in the example above.
+
+13. Use yum to install a local package, automatically checking/satisfying dependencies
+
+yum --nogpgcheck localinstall packagename.arch.rpm 
+14. Get set up for rebuilding packages as yourself, not root
+Sometimes you just have to rebuild that package - maybe only to use some configuration option which just isn't there in the official package. Or because you have found some great package which you really cannot find in the repositories, but the site only gives you RPMs for another distribution. So you have to grab the src.rpm and rebuild it for yourself. But you really do not want to do it as root. So here's how to rebuild your packages in your home directory - with your own user account.
+
+14.1. Method A
+First we setup the directory you want to be working in. Note the astounding similarity to the directory structure in /usr/src/redhat:
+
+
+[testuser@hostname ~]$ cd
+[testuser@hostname ~]$ mkdir -p rpmbuild/{BUILD,RPMS,SPECS,SOURCES,SRPMS}
+[testuser@hostname ~]$ ls rpmbuild/
+BUILD RPMS SOURCES SPECS SRPMS
+[testuser@hostname ~]$
+Then we fiddle with some rpm macros, so rpmbuild knows about you and where you want to build:
+
+
+[testuser@hostname ~]$ echo "%_topdir /home/testuser/rpmbuild" >> ~/.rpmmacros
+[testuser@hostname ~]$ echo "%packager Test User <testuser@example.com>" >> ~/.rpmmacros
+[testuser@hostname ~]$ cat ~/.rpmmacros
+%_topdir /home/testuser/rpmbuild
+%packager Test User <testuser@example.com>
+[testuser@hostname ~]$
+That is it. The next time you issue rpmbuild --rebuild foo.src.rpm, your results will be in ~/rpmbuild/RPMS/i386 (or whichever architecture you just built your package for). Easy, isn't it?
+
+14.2. Method B
+For CentOS-4, configure the kbs-Extras repo (optionally add kbs-Misc) from the Repositories page and "yum install fedora-rpmdevtools" as root using "sudo" or "su -". As the build user (may want to use a special account for this to avoid problems in your normal user home directory) do "fedora-buildrpmtree" and an ~/rpmbuild/... directory tree and ~/.rpmmacros file will be automagically created.
+
+For CentOS-5 - A package for rpmdevtools is available in the EPEL repo from the Repositories page.
+
+The following addition to the macros may be needed to get proper names for some packages (substitute appropriate distro version for "el4" as required):
+
+
+[testuser@hostname ~]$ echo "%dist .el4" >> .rpmmacros 
+15. Display priority scores for all repositories
+You can list all repositories set up on your system by a yum repolist all. However, this does not show priority scores. Here's a one liner for that. If no number is defined, the default is the lowest priority (99).
+
+
+sed -n -e "/^\[/h; /priority *=/{ G; s/\n/ /; s/ity=/ity = /; p }" /etc/yum.repos.d/*.repo | sort -k3n 
+16. Show all installed GPG keys
+Thanks to forum user babo for this one-liner to show all GPG keys along with the corresponding repo information.
+
+rpm -q gpg-pubkey --qf '%{name}-%{version}-%{release} --> %{summary}\n' 
+17. Package signing
+If you want to sign your packages so that others can verify that the package really has been done by you, you can do that rather easily with rpm. Instead of reproducing the documentation here, the Fedora RPM packaging guide (though still a draft) has a chapter on that.
+
+Be aware of a few caveats:
+
+For CentOS 4 and CentOS 5 it would be best if you use a DSA key for signing, there are no known issues with that.
+
+attachment:ArtWork/WikiDesign/icon-admonition-attention.png
+
+Warning: If you use RSA keys for signing, gpg will default to use version 4 signatures. The rpm in CentOS 4 and 5 cannot handle those when checking signatures. You can force rpm (or rather gpg) to do version 3 signatures. See this Bugzilla entry on how to put a macro doing that into your ~/.rpmmacros file. Please read the complete discussion to understand the issue
+
+18. Yum Groups
+You can list yum groups with:
+
+yum grouplist 
+and for more (hidden) groups including the group ids, try:
+
+yum grouplist hidden ids 
+To install a group by it's group ID (for example, the "X Window System (x11)" group):
+
+yum groupinstall x11 
