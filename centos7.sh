@@ -9,6 +9,7 @@ yum -y update && yum -y upgrade
 
 yum -y install epel-release
 rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-2.el7.elrepo.noarch.rpm
+echo "epel-release is Installed"
 
 # Configure Network with Static IP Address  [Provides ifconfig utility] The first thing you need to do is to configure Static IP address, Route and DNS to your CentOS Server. We will be using ip command the replacement of ifconfig command. However, ifconfig command is still available for most of the Linux distributions and can be installed from default repository.
 # Install network and system utilities.
@@ -26,24 +27,29 @@ echo $HOSTNAME
 # Install Command Line Web Browser
 
 yum -y install links
+echo "Link is installed"
 
 # Install GCC (GNU Compiler Collection)
 
 yum -y install gcc
+echo "gcc is installed"
 
 # Install Nmap to Monitor Open Ports
 
 yum -y install nmap
+echo "nmap is installed"
 
 # Installing Wget
 # wget is a Linux command line based utility that retrieves (downloads) content from web servers. It is an important tool you must have to retrieve web contents or download any files using wget command.
 
 yum -y install wget
+echo "wget is installed"
 
 # Installing Telnet
 # Telnet is a network protocol that enables a user to login into another computer on the same network over TCP/IP. Once connection etablished to the remote computer it becomes a virtual terminal and allow you to communicate with the remote host within your computer as per whatever privileges provided to you, Telnet also very useful for checking listening ports on remote computer or host.
 
 yum -y install telnet
+echo "telnet  is installed"
 
 # Install utilities iftop, atop, htop, lsof
 yum -y install iftop
@@ -81,4 +87,5 @@ yum -y install rkhunter
 # VBoxManage extpack install Oracle_VM_VirtualBox_Extension_Pack-4.3.12-93733.vbox-extpack
 # Reboot your System
 echo "The system is going to perform a Reboot"
+echo "Rebooting now.."
 shutdown -r now
