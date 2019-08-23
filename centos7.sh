@@ -15,6 +15,8 @@ echo "epel-release is Installed"
 # Install network and system utilities.
 yum -y install net-tools 
 yum -y install bind-utils
+yum -y install fingers
+yum -y install htop
 
 echo -e "ip addr show"
 
@@ -51,7 +53,8 @@ echo "wget is installed"
 yum -y install telnet
 echo "telnet  is installed"
 
-# Install utilities iftop, atop, htop, lsof
+# Install utilities iftop, atop, 
+, lsof
 yum -y install iftop
 yum -y install htop
 yum -y install atop
