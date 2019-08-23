@@ -16,7 +16,6 @@ echo "epel-release is Installed"
 yum -y install net-tools 
 yum -y install bind-utils
 yum -y install fingers
-yum -y install htop
 
 echo -e "ip addr show"
 
