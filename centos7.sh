@@ -75,6 +75,11 @@ mount -ro ntfs-3g /dev/sda5 /mnt
 
 yum -y install rkhunter
 
+# Install mlocate
+# Let's make sure that mlocate (locate command) is installed as it makes much easier when searching in Linux:
+yum -y install mlocate
+echo "mlocate is installed"
+
 # Enable Virtualization with Virtualbox
 # Virtualization is a process of creating virtual OS, Hardware and Network, is one of the most sought technology of these days. We will be discussing on how to install and configure virtualization in detail.
 # Our CentOS Minimal server is a headless server. Lets prepare it to host virtual machines that is accessible over HTTP by installing following packages.
