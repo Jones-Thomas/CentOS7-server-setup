@@ -1,0 +1,10 @@
+# To show the memory used
+free -h | awk '/^Mem:/ {print $3 "/" $2}'
+
+# To show the memory process
+ps -axch -o cmd:15,%mem --sort=-%mem | head
+
+# To show the CPU process
+ps -axch -o cmd:15,%cpu --sort=-%cpu | head
+
+
