@@ -64,6 +64,11 @@ yum -y install lsof
 
 yum -y install p7zip
 
+# To view the CPU temp
+# To config use: sensors-detect
+
+yum -y install lm_sensors
+
 # Install NTFS-3G Driver
 # A small yet very useful NTFS driver called NTFS-3G is available for most of the UNIX-like distribution. It is useful to mount and access Windows NTFS file system. Though other alternatives like Tuxera NTFS is available, NTFS-3G is most widely used.
 
