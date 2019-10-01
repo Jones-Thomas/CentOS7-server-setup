@@ -52,6 +52,10 @@ echo "wget is installed"
 yum -y install telnet
 echo "telnet  is installed"
 
+# To view the history with date
+echo HISTTIMEFORMAT="%d/%m/%y %T " > ~/.bashrc
+source ~/.bashrc
+
 # Install utilities iftop, atop, 
 , lsof
 yum -y install iftop
