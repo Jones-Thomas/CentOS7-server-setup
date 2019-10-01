@@ -7,4 +7,10 @@ ps -axch -o cmd:15,%mem --sort=-%mem | head
 # To show the CPU process
 ps -axch -o cmd:15,%cpu --sort=-%cpu | head
 
+# to view the top six files space
+du -hsx * | sort -rh | head -6
+
+# to enable the multiple bash history
+shopt -s histappend
+
 
